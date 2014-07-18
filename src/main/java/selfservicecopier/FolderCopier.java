@@ -49,6 +49,9 @@ public class FolderCopier {
 		return value.charAt(value.length()-1) == '/'?value.substring(0, value.length()-1):value;
 	}
 	
+	/**
+	 * Execute file copying.
+	 */
 	public void execute(){
 		if(SRC_FOLDER.equals(DEST_FOLDER)){
 			System.err.println("Source and destination must not be the same.");//to avoid recursive loop
@@ -56,6 +59,38 @@ public class FolderCopier {
 		}
 		
 		createFiles(SRC_FOLDER, DEST_FOLDER);
+		cleanUp(DEST_FOLDER, SRC_FOLDER);
+	}
+	
+	/**
+	 * Execute file clean up, which is to remove unwanted files that have been deleted.
+	 */
+	public void cleanUp(String src, String dest){
+		
+		File srcFolder = new File(src);
+		
+		File[] filesInFolder = srcFolder.listFiles();
+		for(File file: filesInFolder){
+			if(file.isDirectory()){
+				File destFolder = new File(addFolderSlash(dest)+file.getName());
+				if(destFolder.exists() == false){
+					System.out.println("Removing folder:"+file.getName());
+					file.delete();
+				}else{
+					cleanUp(file.toPath().toString(),destFolder.toPath().toString());
+				}
+			}else if(file.isFile()){
+				String filename = file.getName();
+				File srcFile = new File(addFolderSlash(src)+filename);
+				File targetFile = new File(addFolderSlash(dest)+filename);
+
+				if(!targetFile.exists()) {
+					//remove from destFile
+					System.out.println("Removing file:"+srcFile.getName());
+					srcFile.delete();
+			    }
+			}
+		}
 	}
 	
 	private void loadValueToModify() {
