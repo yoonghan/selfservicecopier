@@ -74,8 +74,15 @@ public class FolderCopier {
 			if(file.isDirectory()){
 				File destFolder = new File(addFolderSlash(dest)+file.getName());
 				if(destFolder.exists() == false){
-					System.out.println("Removing folder:"+file.getName());
-					file.delete();
+					String fileName = file.getName();
+					boolean status = file.delete();
+					if(status == false  && file.isDirectory()){
+						System.out.println("Removing subentries");
+						removeSubFiles(file.listFiles());
+						file.delete();
+					}else{
+						System.out.println("Removed folder:"+fileName);	
+					}
 				}else{
 					cleanUp(file.toPath().toString(),destFolder.toPath().toString());
 				}
@@ -93,6 +100,19 @@ public class FolderCopier {
 		}
 	}
 	
+	private void removeSubFiles(File[] listFiles) {
+		for(File subFile: listFiles){
+			String subFileName = subFile.getName();
+			boolean status = subFile.delete();
+			if(status == false && subFile.isDirectory()){
+				removeSubFiles(subFile.listFiles());
+				subFile.delete();
+			}else{
+				System.out.println("Removing file:"+subFileName);
+			}
+		}
+	}
+
 	private void loadValueToModify() {
 		PropertyLoaderUtil propLoader = new PropertyLoaderUtil();
 		try {
