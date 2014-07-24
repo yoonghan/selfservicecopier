@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.self.service.util.common.PropertyLoaderUtil;
+import com.jaring.jom.util.common.PropertyLoaderUtil;
 
 /**
  * This program does not consider it's performance value.
