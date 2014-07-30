@@ -16,7 +16,7 @@
   <dependencies>
   	<dependency>
 		<groupId>jom.jaring</groupId>
-		<artifactId>jjutility</artifactId>
+		<artifactId>JomJaringUtilities_scala</artifactId>
 		<version>${jjutility.version}</version>
 		<scope>compile</scope>
 	</dependency>

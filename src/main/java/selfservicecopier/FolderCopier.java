@@ -114,9 +114,8 @@ public class FolderCopier {
 	}
 
 	private void loadValueToModify() {
-		PropertyLoaderUtil propLoader = new PropertyLoaderUtil();
 		try {
-			InputStream inputStream = propLoader.fileLoader(PROPERTY_MODIFIER);
+			InputStream inputStream = PropertyLoaderUtil.fileLoader(PROPERTY_MODIFIER);
 			BufferedReader bufferReader = new BufferedReader(new InputStreamReader(inputStream));
 			
 			String value="";
@@ -124,7 +123,7 @@ public class FolderCopier {
 				String splitValue[] = value.split(SPLIT_TOKEN);
 				listModifyValue.add(splitValue);
 			}
-		} catch (ClassNotFoundException | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
