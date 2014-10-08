@@ -243,7 +243,7 @@ public class FolderCopier {
 		return EXTENSION_TO_ALTER.contains(extension);
 	}
 
-	private void directCopy(File srcFile, File targetFile) {
+	public void directCopy(File srcFile, File targetFile) {
 		try {
 			Files.copy(srcFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
