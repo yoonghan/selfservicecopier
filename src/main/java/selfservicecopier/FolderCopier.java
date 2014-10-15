@@ -71,10 +71,13 @@ public class FolderCopier {
 		
 		File[] filesInFolder = srcFolder.listFiles();
 		for(File file: filesInFolder){
-			if(file.isDirectory()){
-				File destFolder = new File(addFolderSlash(dest)+file.getName());
+			final String fileName = file.getName();
+			
+			if(file.isDirectory() && shouldSkip(fileName) == false){
+				
+				File destFolder = new File(addFolderSlash(dest)+fileName);
 				if(destFolder.exists() == false){
-					String fileName = file.getName();
+
 					boolean status = file.delete();
 					if(status == false  && file.isDirectory()){
 						System.out.println("Removing subentries");
@@ -87,9 +90,9 @@ public class FolderCopier {
 					cleanUp(file.toPath().toString(),destFolder.toPath().toString());
 				}
 			}else if(file.isFile()){
-				String filename = file.getName();
-				File srcFile = new File(addFolderSlash(src)+filename);
-				File targetFile = new File(addFolderSlash(dest)+filename);
+
+				File srcFile = new File(addFolderSlash(src)+fileName);
+				File targetFile = new File(addFolderSlash(dest)+fileName);
 
 				if(!targetFile.exists()) {
 					//remove from destFile
@@ -100,6 +103,10 @@ public class FolderCopier {
 		}
 	}
 	
+	private boolean shouldSkip(String fileName) {
+		return fileName.startsWith(".");
+	}
+
 	private void removeSubFiles(File[] listFiles) {
 		for(File subFile: listFiles){
 			String subFileName = subFile.getName();

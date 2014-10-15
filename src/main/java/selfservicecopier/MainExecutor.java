@@ -4,8 +4,8 @@ import java.io.File;
 
 public class MainExecutor {
 
-	private static final String srcFolder = "C:\\SelfProject\\vert.x-2.1\\bin\\webapp";
-	private static final String destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\starskydeploy\\webroot";
+	private static final String srcFolder = "C:\\SelfProject\\IDE\\workspace\\nodejs\\webroot";
+	private static final String destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\nodejs\\webroot";
 	
 	private static final String ply_srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\selfservice";
 	private static final String ply_destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\selfservice";
@@ -29,7 +29,11 @@ public class MainExecutor {
 		fc.execute();
 		System.out.println("========Copy conf files.========");
 		
-		String[] copySet = new String[]{"/conf/application.conf","/conf/play.plugins","/conf/routes"};
+		String[] copySet = new String[]{
+				"/conf/application.conf",
+				"/conf/play.plugins",
+				"/conf/routes",
+				"/build.sbt"};
 		
 		for(String toCopy:copySet){
 			System.out.println(">>>"+toCopy);
