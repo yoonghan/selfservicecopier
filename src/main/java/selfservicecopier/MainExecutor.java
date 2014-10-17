@@ -46,6 +46,10 @@ public class MainExecutor {
 	private static void executeFileCopy(String _srcFolder, String _destFolder) {
 		System.out.println("========File started.========");
 		FolderCopier fc = new FolderCopier(_srcFolder, _destFolder);
+		fc.addFoldersToSkip("karma");
+		fc.addFoldersToSkip("karma-chrome-launcher");
+		fc.addFoldersToSkip("karma-jasmine");
+		fc.addFoldersToSkip("test");
 		fc.execute();
 		System.out.println("========File completed.========");
 	}

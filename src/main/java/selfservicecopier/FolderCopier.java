@@ -30,6 +30,7 @@ public class FolderCopier {
 	private String DEST_FOLDER = "";
 	private List<String> EXTENSION_TO_ALTER = Arrays.asList(".html",".css"); //don't for js. Dangerous use minimizer.
 	private List<String[]> listModifyValue = new ArrayList<String[]>(10);
+	private List<String> foldersToSkip = new ArrayList<String>(10);
 	
 	public FolderCopier(String sourceFolder, String destFolder){
 		
@@ -103,8 +104,19 @@ public class FolderCopier {
 		}
 	}
 	
+	public void addFoldersToSkip(String folder){
+		foldersToSkip.add(folder);
+	}
+	
 	private boolean shouldSkip(String fileName) {
-		return fileName.startsWith(".");
+		
+		boolean found = false;
+		
+		if( fileName.startsWith(".") 
+				|| foldersToSkip.contains(fileName))
+			found = true;
+					
+		return found;
 	}
 
 	private void removeSubFiles(File[] listFiles) {
