@@ -28,7 +28,7 @@ public class FolderCopier {
 	private final String PROPERTY_MODIFIER="modifier.properties";
 	private String SRC_FOLDER = "";
 	private String DEST_FOLDER = "";
-	private List<String> EXTENSION_TO_ALTER = Arrays.asList(".html",".css"); //don't for js. Dangerous use minimizer.
+	private List<String> EXTENSION_TO_ALTER = Arrays.asList(".html",".css","controller.js"); //don't for js. Dangerous use minimizer.
 	private List<String[]> listModifyValue = new ArrayList<String[]>(10);
 	private List<String> foldersToSkip = new ArrayList<String>(10);
 	
@@ -202,7 +202,6 @@ public class FolderCopier {
 	        
 	        String output = "";
 	        while((output = inputFileReader.readLine()) != null){
-	        	
 	        	output = doStringReplacement(output);
 	        	
 	        	outputFileWriter.write(output);
@@ -254,12 +253,16 @@ public class FolderCopier {
 
 	private boolean isScanAndAlter(File srcFile) {
 		
-		int lastChar = srcFile.getName().lastIndexOf(".");
-		String extension = lastChar>0?
-					srcFile.getName().substring(lastChar): 
-						"";
+		boolean filter = false;
 		
-		return EXTENSION_TO_ALTER.contains(extension);
+		for(String extension: EXTENSION_TO_ALTER){
+			if(srcFile.getName().lastIndexOf(extension) > -1){
+				filter=true;
+				break;
+			}
+		}
+		
+		return filter;
 	}
 
 	public void directCopy(File srcFile, File targetFile) {

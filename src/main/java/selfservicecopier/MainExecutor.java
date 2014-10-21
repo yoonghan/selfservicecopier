@@ -4,7 +4,7 @@ import java.io.File;
 
 public class MainExecutor {
 
-	private static final String srcFolder = "C:\\SelfProject\\IDE\\workspace\\nodejs\\webroot";
+	private static final String srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\nodejs\\webroot";
 	private static final String destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\nodejs\\webroot";
 	
 	private static final String ply_srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\selfservice";
