@@ -4,8 +4,8 @@ import java.io.File;
 
 public class MainExecutor {
 
-	private static final String srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\nodejs\\webroot";
-	private static final String destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\nodejs\\webroot";
+	private static final String srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\nodejs";
+	private static final String destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\nodejs";
 	
 	private static final String ply_srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\selfservice";
 	private static final String ply_destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\selfservice";
@@ -14,7 +14,8 @@ public class MainExecutor {
 		executeCSSTransformer();
 		
 		//For web
-		executeFileCopy(srcFolder, destFolder);
+		executeFileCopy(srcFolder+"\\webroot", destFolder+"\\webroot");
+		executeFileCopy(srcFolder+"\\node_modules\\mime", destFolder+"\\node_modules\\mime");
 		
 		executePlayCopy();
 		
