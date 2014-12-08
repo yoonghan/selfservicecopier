@@ -10,13 +10,21 @@ public class MainExecutor {
 	private static final String ply_srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\selfservice";
 	private static final String ply_destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\selfservice";
 	
+	/**Node Modules for copy**/
+	//Will hit exception if new modules are to be copied into main folder. Expected for double verification.
+	private static final String[] folderCopies = new String[]{
+		"\\webroot", 
+		"\\node_modules\\mime", 
+		"\\node_modules\\replacer"};
+	/**Node Modules for copy**/
+	
 	public static void main(String[] args) {
 		executeCSSTransformer();
 		
 		//For web
-		executeFileCopy(srcFolder+"\\webroot", destFolder+"\\webroot");
-		executeFileCopy(srcFolder+"\\node_modules\\mime", destFolder+"\\node_modules\\mime");
-		
+		for(String folder: folderCopies){
+			executeFileCopy(srcFolder + folder, destFolder + folder);
+		}
 		executePlayCopy();
 		
 	}
