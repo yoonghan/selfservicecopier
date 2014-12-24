@@ -7,6 +7,11 @@ public class CommandExecutor {
 	
 	//[1]command, [2]source, [3]destination
 	private final String[] EXECUTE_CSS_PRETTIFIER=new String[]{"C:\\SelfProject\\sass\\sass.bat","C:\\SelfProject\\sass\\precompiled","C:\\SelfProject\\vert.x-2.1\\bin\\webapp\\cache\\css"};
+	private final String[] EXECUTE_PLAY_COMPILER=new String[]{"C:\\SelfProject\\playCompiler\\compile.bat","",""};
+	
+	public void compilePlay(){
+		executeCmd(EXECUTE_PLAY_COMPILER,"","");
+	}
 	
 	public void scanSass(String dirName){
 		

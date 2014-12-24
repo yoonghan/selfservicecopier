@@ -26,7 +26,8 @@ public class MainExecutor {
 			executeFileCopy(srcFolder + folder, destFolder + folder);
 		}
 		executePlayCopy();
-		
+	
+		executePlayCompiler();
 	}
 
 	private static void executePlayCopy() {
@@ -68,6 +69,13 @@ public class MainExecutor {
 		CommandExecutor ce = new CommandExecutor();
 		ce.scanSass("");
 		System.out.println("========Transformer completed========");
+	}
+	
+	private static void executePlayCompiler() {
+		System.out.println("========Play Compiler started========");
+		CommandExecutor ce = new CommandExecutor();
+		ce.compilePlay();
+		System.out.println("========Play Compiler completed========");
 	}
 	
 }
