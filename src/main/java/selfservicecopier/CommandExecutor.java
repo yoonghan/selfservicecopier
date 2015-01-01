@@ -52,9 +52,13 @@ public class CommandExecutor {
 		System.out.println("Execute cmd:"+cmdLine.toString());
 		
 		try {
-			Runtime.getRuntime().exec(cmdLine.toString());
+			Process p = Runtime.getRuntime().exec(cmdLine.toString());
+			p.waitFor();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch( InterruptedException ex ){
+		    ex.printStackTrace();     
+
 		}
 		
 	}
