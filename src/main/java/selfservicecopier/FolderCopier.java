@@ -13,6 +13,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.jaring.jom.util.common.PropertyLoaderUtil;
 
@@ -28,6 +30,13 @@ public class FolderCopier {
 	private final String PROPERTY_MODIFIER="modifier.properties";
 	private String SRC_FOLDER = "";
 	private String DEST_FOLDER = "";
+	
+	private final String JAVASCRIPT_EXTENSION = ".js";
+	private final String JS_REGEX = ".*(=|return).*\\n";
+	private final Pattern JS_VALIDATION_PATTERN = Pattern.compile(JS_REGEX);
+	private final String JS_REGEX_CONTAIN = "^.*[;\\{\\},\\)\\|\\(&]\\s*$";
+	private final Pattern JS_VALID_PATTERN = Pattern.compile(JS_REGEX_CONTAIN);
+	
 	private List<String> EXTENSION_TO_ALTER = Arrays.asList(".html",".css","controller.js","global_var.js"); //don't for js. Dangerous use minimizer.
 	private List<String[]> listModifyValue = new ArrayList<String[]>(10);
 	private List<String> foldersToSkip = new ArrayList<String>(10);
@@ -203,7 +212,9 @@ public class FolderCopier {
 	        String output = "";
 	        while((output = inputFileReader.readLine()) != null){
 	        	output = doStringReplacement(output);
-	        	
+	        	if(isJavaScript(srcFile.getName())){
+	        		output = doJavascriptValidation(output, srcFile.getName());
+	        	}
 	        	outputFileWriter.write(output);
 	        	outputFileWriter.flush();
 	        }
@@ -228,6 +239,24 @@ public class FolderCopier {
 			System.err.println("FILE COPY FAIL");
 			e.printStackTrace();	//local machine and this will fail? come on.
 		}
+	}
+	
+	private String doJavascriptValidation(String output, String fileName){
+		
+		output = output.replaceAll("^\\s*[\\*|\\/\\*|\\*\\/].*", "");
+		
+		Matcher match = JS_VALIDATION_PATTERN.matcher(output);
+		//Check that the file ends correctly
+		if(match.matches() && !JS_VALID_PATTERN.matcher(output).matches()){
+			System.err.println("Filename:["+fileName+"] is not compiling javascript standards." );
+			System.out.println("Line character:["+output.replace("\\n", "")+"] vs regex:["+JS_REGEX+"]");
+		}
+		
+		return output;
+	}/***/
+	
+	private final boolean isJavaScript(String fileName){
+		return fileName.endsWith(JAVASCRIPT_EXTENSION);
 	}
 
 	public String doStringReplacement(String output) {
