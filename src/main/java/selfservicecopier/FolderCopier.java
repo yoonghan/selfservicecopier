@@ -243,7 +243,7 @@ public class FolderCopier {
 	
 	private String doJavascriptValidation(String output, String fileName){
 		
-		output = output.replaceAll("^\\s*[\\*|\\/\\*|\\*\\/].*", "");
+		output = output.replaceAll("^\\s*(\\*|\\/\\*|\\*\\/|\\/\\/).*", "");
 		
 		Matcher match = JS_VALIDATION_PATTERN.matcher(output);
 		//Check that the file ends correctly
