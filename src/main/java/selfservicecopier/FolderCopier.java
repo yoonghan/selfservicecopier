@@ -28,7 +28,7 @@ public class FolderCopier {
 	private final String PROPERTY_MODIFIER="modifier.properties";
 	private String SRC_FOLDER = "";
 	private String DEST_FOLDER = "";
-	private List<String> EXTENSION_TO_ALTER = Arrays.asList(".html",".css","controller.js"); //don't for js. Dangerous use minimizer.
+	private List<String> EXTENSION_TO_ALTER = Arrays.asList(".html",".css","controller.js","global_var.js"); //don't for js. Dangerous use minimizer.
 	private List<String[]> listModifyValue = new ArrayList<String[]>(10);
 	private List<String> foldersToSkip = new ArrayList<String>(10);
 	

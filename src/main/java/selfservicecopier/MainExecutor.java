@@ -9,7 +9,7 @@ public class MainExecutor {
 	
 	private static final String ply_srcFolder = "C:\\SelfProject\\IDE\\workspace_scala\\selfservice";
 	private static final String ply_destFolder = "C:\\SelfProject\\IDE\\workspace\\_migrateGitHub\\selfservice";
-	
+	 
 	/**Node Modules for copy**/
 	//Will hit exception if new modules are to be copied into main folder. Expected for double verification.
 	private static final String[] folderCopies = new String[]{
