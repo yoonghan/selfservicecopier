@@ -1,0 +1,22 @@
+[
+{
+ "tooltip":"All about us",
+ "display":"About Us", 
+ "link":"/webby/webpage/about/" 
+},
+{
+ "tooltip":"Site Design",
+ "display":"Architecture", 
+ "link":"/webby/webpage/architecture/" 
+},
+{
+ "tooltip":"Status Update",
+ "display":"Blog", 
+ "link":"/webby/webpage/blog/" 
+},
+{
+ "tooltip":"Research and Development",
+ "display":"Research", 
+ "link":"/webby/webpage/research/" 
+}
+] 	

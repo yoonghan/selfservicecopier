@@ -1,0 +1,67 @@
+apply from: "gradle/env.gradle"
+
+def javascript = "/cache/js"
+def stylesheet = "/cache/css"
+
+	task copyNodeJS_WebrootFiles(type: Sync){
+		from "$nodeJSSrcDir/webroot"
+		exclude "**"+javascript
+		exclude "**"+stylesheet
+		into "$nodeJSDestDir/webroot"
+	}
+
+	task copyNodeJS_JavascriptFiles(type: Sync){
+		from "$nodeJSSrcDir/webroot"+javascript
+		filter{String line -> line.replaceAll('http://localhost:9000', '//scala.jomjaring.com')}
+		filter{String line -> line.replaceAll('ws://localhost:9000', 'ws://scala.jomjaring.com:8000')}
+		into "$nodeJSDestDir/webroot"+javascript
+	}
+
+	task copyNodeJS_StylesheetFiles(type: Sync){
+		from "$nodeJSSrcDir/webroot"+stylesheet
+		into "$nodeJSDestDir/webroot"+stylesheet
+	}
+	
+	copyNodeJS_StylesheetFiles.mustRunAfter copyNodeJS_WebrootFiles
+	copyNodeJS_JavascriptFiles.mustRunAfter copyNodeJS_WebrootFiles
+
+	task copyNodeJS_ModuleFiles(type: Copy){
+		from "$nodeJSSrcDir/node_modules"
+		include 'mime/'
+		include 'replacer/'
+		into "$nodeJSDestDir/node_modules"
+	}
+
+	task copyPlay_AppFiles(type:Sync){
+		from "$playSrcDir/app"
+		into "$playDestDir/app"
+	}
+	task copyPlay_ConfFiles(type:Copy){	
+		from "$playSrcDir/conf"
+		include '**/application.conf'
+		include '**/play.plugins'
+		include '**/routes'
+		into "$playDestDir/conf"
+	}
+	task copyPlay_BuildFiles(type:Copy){	
+		from playSrcDir
+		include 'build.sbt'
+		into playDestDir
+	}
+
+	task playCompile(type:Exec){
+		environment "JAVA_HOME",System.properties.'java.home'+"\\.."
+		executable "play.bat"
+		args "$playDestDir"
+	}
+
+	task buildPlayProject(type:GradleBuild){
+		tasks = ['copyPlay_AppFiles', 'copyPlay_ConfFiles', 'copyPlay_BuildFiles', 'playCompile']
+	}
+	task buildNodeProject(type:GradleBuild){
+		tasks = ['copyNodeJS_WebrootFiles','copyNodeJS_JavascriptFiles','copyNodeJS_StylesheetFiles','copyNodeJS_ModuleFiles']
+	}
+	
+	task build(type:GradleBuild){
+		tasks = ['buildPlayProject', 'buildNodeProject']
+	}
