@@ -97,6 +97,7 @@
 		from "${nodeJSSrcDir}/webroot"
 		include "**/"+d_html
 		filter{String line -> line.replaceAll('\\s+', ' ')}	//replace all spaces with a single space, javascript included.
+        filter{String line -> line.replaceAll('http://localhost:9000', '//scala.jomjaring.com')}		//replace all urls
 		into "${nodeJSDestDir}/webroot"
 	}
 	
@@ -119,6 +120,7 @@
 		from "${playSrcDir}/conf"
 		include '**/application.conf'
 		include '**/play.plugins'
+		include '**/*.html'
 		include '**/routes'
 		into "${playDestDir}/conf"
 	}
