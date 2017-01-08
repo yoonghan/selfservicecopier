@@ -74,6 +74,7 @@
 		from "${nodeJSSrcDir}/dist"
 		exclude "patternlibrary/"
 		exclude "**/patternlibrary"
+		filter{String line -> line.replaceAll('\\s+', ' ')} //filter all files to be space free
 		into "${nodeJSDestDir}/dist"
 	}
 
