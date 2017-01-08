@@ -1,6 +1,6 @@
 /**Variables[S]**/
-	def d_javascript = "cache/js"
-	def d_stylesheet = "cache/css"
+	def d_javascript = "dist/ext/js"
+	def d_stylesheet = "dist/ext/css"
 	def d_html = "*.html"
 /**Variables[E]**/
 
@@ -25,22 +25,21 @@
 	apply plugin: 'js'
 	apply plugin: 'css'
 	apply plugin: 'com.moowork.gulp'
+	apply plugin: 'com.moowork.node'
 
 	javascript.source {
 		custom {
 		  js {
-			 srcDir "${nodeJSDestDir}/webroot/${d_javascript}"
+			 srcDir "${nodeJSDestDir}/${d_javascript}"
 			 include "**/*.js"
-			 exclude "patternlibrary"
 		  }
 		}
 	}
 	css.source {
 		custom {
 		  css {
-			 srcDir "${nodeJSDestDir}/webroot/${d_stylesheet}"
+			 srcDir "${nodeJSDestDir}/${d_stylesheet}"
 			 include "**/*.css"
-			 exclude "patternlibrary"
 		  }
 		}
 	}
@@ -58,7 +57,7 @@
 		tasks.create(name: "dominifyCss${idx}", type: com.eriwen.gradle.css.tasks.MinifyCssTask) {
 			source = cssFile
 			dest = cssFile.getAbsolutePath()
-		    yuicompressor { // Optional
+		    yuicompressor {
 				lineBreakPos = -1
 			}
 		}
@@ -70,65 +69,42 @@
 /**Apply[E]**/
 
 /**Task[S]**/
-	task copyNodeJS_WebrootFiles(type: Sync){
+
+	task NodeJS_WebrootFiles(type: Sync){
 		from "${nodeJSSrcDir}/dist"
-		exclude "**/"+d_javascript
-		exclude "**/"+d_stylesheet
-		exclude "**/"+d_html
-		exclude "patternlibrary"
+		exclude "patternlibrary/"
 		exclude "**/patternlibrary"
-		into "${nodeJSDestDir}/webroot"
+		into "${nodeJSDestDir}/dist"
 	}
 
+	task NodeJS_NpmFiles(type: Copy){
+		from "${nodeJSSrcDir}/"
+		include "util/"
+		include "server.js"
+		include "package.json"
+		into "${nodeJSDestDir}/"
+	}
+
+	task NodeJS_NpmInstall(type: NpmTask) {
+	    description = "Installs dependencies from package.json"
+	    workingDir = file("${nodeJSDestDir}")
+	    args = ['install', '--production']
+	}
+
+	task NodeJS_MinifyFiles(dependsOn:['individualCssMinify'])
+	task individualCssMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyCss") })
 	task individualJsMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyJs") })
 
-	task copyJavascript(type: Sync){
-		from "${nodeJSSrcDir}/dist/${d_javascript}"
-		filter{String line -> line.replaceAll('http://localhost:9000', '//scala.walcron.com')}		//replace all urls
-		filter{String line -> line.replaceAll('ws://localhost:9000', 'ws://scala.walcron.com:8000')}	//replace all urls
-		filter{String line -> line.replaceAll('^//#.*sourceMappingURL.*$', '')}							//replace all source mapping
-		into "${nodeJSDestDir}/webroot/${d_javascript}"
-	}
 
-	task copyNodeJS_JavascriptFiles(dependsOn:["copyJavascript","individualJsMinify"]){
-	}
-
-	task copyNodeJS_StylesheetFiles(dependsOn:["copyStylesheet","individualCssMinify"]){
-	}
-
-	task individualCssMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyCss") })
-
-	task copyStylesheet(type: Sync){
-		from "${nodeJSSrcDir}/dist/${d_stylesheet}"
-		into "${nodeJSDestDir}/webroot/${d_stylesheet}"
-	}
-
-	task copyNodeJS_HtmlFiles(type: Copy){
-		from "${nodeJSSrcDir}/dist"
-		include "**/"+d_html
-		exclude "patternlibrary"
-		exclude "**/patternlibrary"
-		filter{String line -> line.replaceAll('\\s+', ' ')}	//replace all spaces with a single space, javascript included.
-        filter{String line -> line.replaceAll('http://localhost:9000', '//scala.walcron.com')}		//replace all urls
-		into "${nodeJSDestDir}/webroot"
-	}
-
-	copyNodeJS_HtmlFiles.mustRunAfter copyNodeJS_WebrootFiles
-	copyNodeJS_StylesheetFiles.mustRunAfter copyNodeJS_WebrootFiles
-	copyNodeJS_JavascriptFiles.mustRunAfter copyNodeJS_WebrootFiles
-	copyNodeJS_WebrootFiles.mustRunAfter gulp_build
-
-	task copyNodeJS_ModuleFiles(type: Copy){
-		from "${nodeJSSrcDir}/node_modules"
-		include 'mime/'
-		include 'replacer/'
-		into "${nodeJSDestDir}/node_modules"
-	}
+	NodeJS_WebrootFiles.mustRunAfter gulp_build
+	NodeJS_MinifyFiles.mustRunAfter NodeJS_WebrootFiles
+	NodeJS_NpmInstall.mustRunAfter NodeJS_NpmFiles
 
 	task copyPlay_AppFiles(type:Sync){
 		from "${playSrcDir}/app"
 		into "${playDestDir}/app"
 	}
+
 	task copyPlay_ConfFiles(type:Copy){
 		from "${playSrcDir}/conf"
 		include '**/application.conf'
@@ -137,6 +113,7 @@
 		include '**/routes'
 		into "${playDestDir}/conf"
 	}
+
 	task copyPlay_BuildFiles(type:Copy){
 		from playSrcDir
 		include 'build.sbt'
@@ -152,8 +129,9 @@
 	task buildPlayProject(type:GradleBuild){
 		tasks = ['copyPlay_AppFiles', 'copyPlay_ConfFiles', 'copyPlay_BuildFiles', 'playCompile']
 	}
+
 	task buildNodeProject(type:GradleBuild){
-		tasks = ['gulp_build', 'copyNodeJS_WebrootFiles','copyNodeJS_JavascriptFiles','copyNodeJS_StylesheetFiles','copyNodeJS_ModuleFiles','copyNodeJS_HtmlFiles']
+		tasks = ['gulp_build', 'NodeJS_WebrootFiles', 'NodeJS_MinifyFiles', 'NodeJS_NpmFiles', 'NodeJS_NpmInstall']
 	}
 
 	task build(type:GradleBuild){
