@@ -1,6 +1,6 @@
 /**Variables[S]**/
-	def d_javascript = "dist/ext/js"
-	def d_stylesheet = "dist/ext/css"
+	def d_javascript = "dist/main/ext/js"
+	def d_stylesheet = "dist/main/ext/css"
 	def d_html = "*.html"
 /**Variables[E]**/
 
@@ -71,15 +71,13 @@
 
 /**Task[S]**/
 	task NodeJS_WebrootFiles(type: Sync){
-		from "${nodeJSSrcDir}/dist"
-		exclude "patternlibrary/"
-		exclude "**/patternlibrary"
-		into "${nodeJSDestDir}/dist"
+		from "${nodeJSSrcDir}/dist/main"
+		into "${nodeJSDestDir}/dist/main"
 	}
 
 	task NodeJS_NpmFiles(type: Copy){
 		from "${nodeJSSrcDir}/"
-		include "util/"
+		include "npm/"
 		include "server.js"
 		include "package.json"
 		into "${nodeJSDestDir}/"
@@ -91,13 +89,13 @@
 	    args = ['install', '--production']
 	}
 
-	task NodeJS_MinifyFiles(dependsOn:['individualCssMinify','individualJsMinify'])
-	task individualCssMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyCss") })
-	task individualJsMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyJs") })
+	//No longer required, handled by webpack
+	//task NodeJS_MinifyFiles(dependsOn:['individualCssMinify','individualJsMinify'])
+	//task individualCssMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyCss") })
+	//task individualJsMinify(dependsOn: tasks.matching { Task task -> task.name.startsWith("dominifyJs") })
 
 
 	NodeJS_WebrootFiles.mustRunAfter gulp_buildprod
-	NodeJS_MinifyFiles.mustRunAfter NodeJS_WebrootFiles
 	NodeJS_NpmInstall.mustRunAfter NodeJS_NpmFiles
 
 	task copyPlay_AppFiles(type:Sync){
@@ -131,7 +129,7 @@
 	}
 
 	task buildNodeProject(type:GradleBuild){
-		tasks = ['gulp_buildprod', 'NodeJS_WebrootFiles', 'NodeJS_NpmFiles', 'NodeJS_NpmInstall']
+		tasks = ['gulp_build-prod', 'NodeJS_WebrootFiles', 'NodeJS_NpmFiles', 'NodeJS_NpmInstall']
 	}
 
 	task build(type:GradleBuild){
