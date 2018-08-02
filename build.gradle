@@ -70,6 +70,12 @@
 /**Apply[E]**/
 
 /**Task[S]**/
+	task NodeJS_Test(type: NpmTask) {
+		description = "Test NPM before execution"
+		workingDir = file("${nodeJSSrcDir}")
+		args = ['run', 'test']
+
+	}
 	task NodeJS_WebrootFiles(type: Sync){
 		from "${nodeJSSrcDir}/dist/main"
 		into "${nodeJSDestDir}/dist/main"
@@ -129,7 +135,7 @@
 	}
 
 	task buildNodeProject(type:GradleBuild){
-		tasks = ['gulp_build-prod', 'NodeJS_WebrootFiles', 'NodeJS_NpmFiles', 'NodeJS_NpmInstall']
+		tasks = ['NodeJS_Test', 'gulp_build-prod', 'NodeJS_WebrootFiles', 'NodeJS_NpmFiles', 'NodeJS_NpmInstall']
 	}
 
 	task build(type:GradleBuild){
